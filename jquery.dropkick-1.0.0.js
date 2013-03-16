@@ -10,12 +10,12 @@
  */
 (function ($, window, document) {
 
-  var ie6 = false;
+      msie = !!msVersion,
 
   // Help prevent flashes of unstyled content
   if ($.browser.msie && $.browser.version.substr(0, 1) < 7) {
     ie6 = true;
-  } else {
+  if (!ie6) {
     document.documentElement.className = document.documentElement.className + ' dk_fouc';
   }
   
@@ -37,7 +37,7 @@
 
     // HTML template for the dropdowns
     dropdownTemplate = [
-      '<div class="dk_container {{ isDisabled }}" id="dk_container_{{ id }}" tabindex="{{ tabindex }}">',
+      '<div class="dk_container" id="dk_container_{{ id }}" tabindex="{{ tabindex }}">',
         '<a class="dk_toggle">',
           '<span class="dk_label">{{ label }}</span>',
         '</a>',
@@ -91,7 +91,6 @@
 
         // The completed dk_container element
         $dk = false,
-        
         // Disable feature
         isDisabled  = ($(this).attr('disabled') !== undefined) ? 'gd-disable' : '',
 
@@ -110,9 +109,6 @@
         data.value     = _notBlank($select.val()) || _notBlank($original.attr('value'));
         data.label     = $original.text();
         data.options   = $options;
-        
-        // Disable Feature
-        data.isDisabled  = isDisabled;
       }
 
       // Build the dropdown HTML
@@ -319,9 +315,7 @@
     template = template.replace('{{ id }}', view.id);
     template = template.replace('{{ label }}', view.label);
     template = template.replace('{{ tabindex }}', view.tabindex);
-    
     // Disable Feature
-    template = template.replace('{{ isDisabled }}', view.isDisabled);
 
     if (view.options && view.options.length) {
       for (var i = 0, l = view.options.length; i < l; i++) {
@@ -353,11 +347,12 @@
 
     // Handle click events on the dropdown toggler
     $('.dk_toggle').live('click', function (e) {
+    $(document).on('click', '.dk_toggle', function (e) {
       var $dk  = $(this).parents('.dk_container').first();
 
       if(!$dk.hasClass('gd-disable')){
-    	  _openDropdown($dk);
       } 
+      _openDropdown($dk);
 
       if ("ontouchstart" in window) {
         $dk.addClass('dk_touch');
@@ -369,7 +364,7 @@
     });
 
     // Handle click events on individual dropdown options
-    $('.dk_options a').live(($.browser.msie ? 'mousedown' : 'click'), function (e) {
+    $(document).on((msie ? 'mousedown' : 'click'), '.dk_options a', function (e) {
       var
         $option = $(this),
         $dk     = $option.parents('.dk_container').first(),
