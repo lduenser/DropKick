@@ -10,11 +10,11 @@
  */
 (function ($, window, document) {
 
+  var msVersion = navigator.userAgent.match(/MSIE ([0-9]{1,}[\.0-9]{0,})/),
       msie = !!msVersion,
+      ie6 = msie && parseFloat(msVersion[1]) < 7;
 
   // Help prevent flashes of unstyled content
-  if ($.browser.msie && $.browser.version.substr(0, 1) < 7) {
-    ie6 = true;
   if (!ie6) {
     document.documentElement.className = document.documentElement.className + ' dk_fouc';
   }
@@ -91,8 +91,6 @@
 
         // The completed dk_container element
         $dk = false,
-        // Disable feature
-        isDisabled  = ($(this).attr('disabled') !== undefined) ? 'gd-disable' : '',
 
         theme
       ;
@@ -315,7 +313,6 @@
     template = template.replace('{{ id }}', view.id);
     template = template.replace('{{ label }}', view.label);
     template = template.replace('{{ tabindex }}', view.tabindex);
-    // Disable Feature
 
     if (view.options && view.options.length) {
       for (var i = 0, l = view.options.length; i < l; i++) {
@@ -346,12 +343,9 @@
   $(function () {
 
     // Handle click events on the dropdown toggler
-    $('.dk_toggle').live('click', function (e) {
     $(document).on('click', '.dk_toggle', function (e) {
       var $dk  = $(this).parents('.dk_container').first();
 
-      if(!$dk.hasClass('gd-disable')){
-      } 
       _openDropdown($dk);
 
       if ("ontouchstart" in window) {
